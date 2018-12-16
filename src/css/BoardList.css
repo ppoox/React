@@ -1,0 +1,11 @@
+h1 {
+    display: inline;
+    
+    padding-right: 80px;
+}
+.boardList {
+    padding-top: 30px;
+}
+.boardList:first-child{
+    padding-top: 200px;
+}
