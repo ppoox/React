@@ -55,9 +55,9 @@ class BoardInsert extends Component{
                     <input id="deleteNum"></input>
                     <button type="button" onClick={this._deleteBtn}><h3>삭제</h3></button>
                 </form>
-                {this.state.boards.map((board, index) => {
-                    return <BoardList num={board.num} title={board.title} content={board.content} key={index}/>
-                 })}
+                {this.state.boards.map((board, index) => 
+                    <BoardList num={board.num} title={board.title} content={board.content} key={index}/>
+                 )}
             </div>
             
         )
