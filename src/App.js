@@ -24,22 +24,26 @@ class App extends Component {
       this.setState({
       boards: this.state.boards.concat(obj)
       }, () => console.log(this.state.boards));
-
   }
  
-  deleteBtn = (dNum) => {
+  delete = (dNum) => {
       this.setState({
           boards: this.state.boards.filter(boards => boards.num !== dNum)
       })
   }
 
+  update = (data) => {
+    this.setState({
+      boards: this.state.boards.map(board => board.num === data.num ? ({...board, title: data.title, content: data.content}): board)
+    })
+  }
+
   render(){
       return(
-          <div className="boardInsert">
+          <div className="App">
               <BoardInsert insert={this.insert}/>
-
               {this.state.boards.map((board) => 
-                  <BoardList key={board.num} num={board.num} title={board.title} content={board.content} delete={this.deleteBtn}/>
+                  <BoardList key={board.num} num={board.num} title={board.title} content={board.content} delete={this.delete} update={this.update}/>
                )}
           </div>
       )

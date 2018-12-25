@@ -20,8 +20,8 @@ class BoardInsert extends Component{
                   <span><h3>제목 : </h3></span>
                   <input className="titleInsert" id="title" name="title"></input>
                   <span><h3>내용 : </h3></span>
-                  <textarea className="contentInsert" id="content" name="comtent"></textarea>
-                  <button type="submit"><h3>작성</h3></button>
+                  <textarea className="contentInsert" id="content" name="content"></textarea>
+                  <button type="submit"><h3>입력</h3></button>
               </form>
             </div>
         )
