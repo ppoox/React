@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './css/BoardList.css';
 import BoardUpdate from './BoardUpdate';
 

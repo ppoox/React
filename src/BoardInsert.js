@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import { board_save } from './App_reducer'
 import './css/BoardInsert.css';
 
 class BoardInsert extends Component{
@@ -10,7 +13,8 @@ class BoardInsert extends Component{
             content: e.target.content.value
         }
   
-       this.props.insert(data);
+       //this.props.insert(data);
+       this.props.dispatch(board_save(data));
     }
 
     render(){
@@ -28,4 +32,12 @@ class BoardInsert extends Component{
     }
 }
 
-export default BoardInsert;
+let mapStateToProps = (state) => {
+    return
+}
+
+let mapDispatchToProps = (dispatch) => {
+    return
+}
+
+export default connect(mapStateToProps)(BoardInsert);
