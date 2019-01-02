@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import './css/BoardList.css';
+import { board_remove } from '../reducers/App_reducer'
+import '../css/BoardList.css';
 import BoardUpdate from './BoardUpdate';
+
+import Button from '@material-ui/core/Button';
 
 class BoardList extends Component {
     state= {
@@ -9,7 +12,7 @@ class BoardList extends Component {
     }
 
     deleteBtn = () => {
-        this.props.delete(this.props.num);
+        this.props.dispatch(board_remove(this.props.num));
     }
 
     updateBtn = () => {
@@ -28,13 +31,19 @@ class BoardList extends Component {
             <div className="boardList">
                 <h1>번호 : {this.props.num}</h1>
                 <h1>제목 : {this.props.title}</h1>
-                <h1>내용{this.props.content}</h1>
+                <h1>내용 : {this.props.content}</h1>
                 { !this.state.hideUpdate && <BoardUpdate num={this.props.num} update={this.props.update} updateBtn2={this.updateBtn2}/> }
-                { this.state.hideUpdate && <button type="button" onClick={this.updateBtn}><h3>수정</h3></button> }
-                <button type="button" onClick={this.deleteBtn}><h3>삭제</h3></button>
+                { this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={this.updateBtn}><h3>수정</h3></Button> }
+                <Button variant="contained" color="primary" type="button" onClick={this.deleteBtn}><h3>삭제</h3></Button>
             </div>
         )
     }
 }
 
-export default BoardList
+const mapStateToProps = (state) => {
+    return {
+      
+    }
+}
+
+export default connect(mapStateToProps)(BoardList)

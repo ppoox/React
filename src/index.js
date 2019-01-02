@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 
 import './index.css';
 import App from './App';
-import board_reducer from './App_reducer';
+import board_reducer from './reducers/App_reducer';
 import * as serviceWorker from './serviceWorker';
 
 let store = createStore(board_reducer);

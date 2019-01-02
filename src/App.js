@@ -1,71 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import BoardList from './BoardList';
-import BoardInsert from './BoardInsert';
+import BoardList from './views/BoardList';
+import BoardInsert from './views/BoardInsert';
+import BoardList2 from './BoardList2';
 
-//class App extends Component {
-//   state= {
-//       boards:[
-//         {
-//           num: 1,
-//           title: "title1",
-//           content: "content1"
-//         }
-//       ]
-//   }
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
-//   insert = (data) => {
-//       let obj={
-//         num: this.state.boards[this.state.boards.length-1].num+1,
-//         title: data.title,
-//         content: data.content
-//       };  
 
-//       this.setState({
-//       boards: this.state.boards.concat(obj)
-//       }, () => console.log(this.state.boards));
-//   }
- 
-//   delete = (dNum) => {
-//       this.setState({
-//           boards: this.state.boards.filter(boards => boards.num !== dNum)
-//       })
-//   }
 
-//   update = (data) => {
-//     this.setState({
-//       boards: this.state.boards.map(board => board.num === data.num ? ({...board, title: data.title, content: data.content}): board)
-//     })
-//   }
-
-//   render(){
-//       return(
-//           <div className="App">
-//               <BoardInsert insert={this.insert}/>
-//               {boards.map((board) => 
-//                   <BoardList key={board.num} num={board.num} title={board.title} content={board.content} delete={this.delete} update={this.update}/>
-//                )}
-//           </div>
-//       )
-//   }
-// }
 
 
 const App = ({boards}) => (
     <div className="App">
-        <BoardInsert insert={boards.insert}/>
-        {boards.map((board) => 
-        <BoardList key={board.num} num={board.num} title={board.title} content={board.content} delete={board.delete} update={board.update}/>
-        )}
+        <AppBar position="static" color="primary">
+        <Toolbar>
+          <Typography variant="h6" color="inherit">
+            게시판
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Grid
+        container
+        direction="column"
+        justify="space-evenly"
+        alignItems="center"
+        >
+            <BoardInsert insert={boards.insert}/>
+            {/* {boards.map((board) => 
+            <BoardList key={board.num} num={board.num} title={board.title} content={board.content} delete={board.delete} update={board.update}/>            )} */}
+       
+       
+        {//<BoardList2 key={boards.num} num={boards.num} title={boards.title} content={boards.content} delete={boards.delete} update={boards.update}/>}
+            <BoardList2 key={boards.num} rows={boards}/>}
+        </Grid>
     </div>
 )
 
 
-let mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
     return {
-        boards: state.boards,
-        selectedBoard: state.selectedBoard
+        boards: state.boards
     }
 }
 
