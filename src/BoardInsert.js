@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { board_save } from '../reducers/App_reducer'
-import '../css/BoardInsert.css';
-
+import { board_save } from './reducer/App_reducer'
+import PropTypes from 'prop-types';
+// css import
+import './css/BoardInsert.css';
 import Button from '@material-ui/core/Button';
 
 class BoardInsert extends Component{
+    // 입력 버튼 클릭시
     insertSubmit = (e) => {
         e.preventDefault();
-  
+        
         let data={
             title: e.target.title.value,
             content: e.target.content.value
         }
+        // board_save action 호출을 위한 dispatch
         this.props.dispatch(board_save(data))
     }
 
@@ -31,5 +33,11 @@ class BoardInsert extends Component{
         )
     }
 }
+
+// BoardInsert.propTypes = {
+//     data: PropTypes.object.isRequired,
+//     title: PropTypes.string.isRequired,
+//     content: PropTypes.textarea.isRequired
+// };
 
 export default connect()(BoardInsert);

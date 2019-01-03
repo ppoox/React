@@ -1,5 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { board_remove } from './reducer/App_reducer'
+import BoardUpdate from './BoardUpdate';
+// css import
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,12 +18,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import { TableHead } from '@material-ui/core';
-
-import { connect } from 'react-redux';
-import { board_remove } from './reducers/App_reducer'
-
-import BoardUpdate from './views/BoardUpdate';
-
 import Button from '@material-ui/core/Button';
 
 const actionsStyles = theme => ({
@@ -30,6 +28,7 @@ const actionsStyles = theme => ({
   },
 });
 
+// 페이징 처리를 위한 class
 class TablePaginationActions extends React.Component {
   handleFirstPageButtonClick = event => {
     this.props.onChangePage(event, 0);
@@ -114,36 +113,40 @@ const styles = theme => ({
   },
 });
 
+// Table에서의 actions들을 담은 class
 class CustomPaginationActionsTable extends React.Component {
   state= {
     hideUpdate: true,
     page: 0,
-    rowsPerPage: 5,
-}
+    rowsPerPage: 5
+  }
 
-deleteBtn = (dNum) => {
-  console.log(dNum);
-  this.props.dispatch(board_remove(dNum));
- 
-}
+  // 삭제 버튼 클릭시
+  deleteBtn = (dNum) => {
+    this.props.dispatch(board_remove(dNum));
+  }
 
-updateBtn = () => {
-    this.setState({
-        hideUpdate:false
-    })
-}
-updateBtn2 = (hideUpdate) => {
-    this.setState({
-        hideUpdate: hideUpdate
-    })
-}
+  // 수정 버튼 클릭시 (수정을 위한 form을 보여줌)
+  updateBtn = (e) => {
+      e.preventDefault();
+      this.setState({
+          hideUpdate:false
+      })
+  }
 
+  // 수정 폼 유지를 위한 정보를 받음
+  updateBtn2 = (hideUpdate) => {
+      this.setState({
+          hideUpdate: hideUpdate
+      })
+  }
 
-
+  // Table 페이징 이동을 위한 메소드 1
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
 
+  // Table 페이징 이동을 위한 메소드 2
   handleChangeRowsPerPage = event => {
     this.setState({ rowsPerPage: event.target.value });
   };
@@ -215,23 +218,11 @@ updateBtn2 = (hideUpdate) => {
 CustomPaginationActionsTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-
+// reducer의 state를 받아오기 위한 mapStateToProps
 const mapStateToProps = (state) => {
-  console.log("mapStateToProps");
   return {
     boards: state.boards
   }
-  
-}
-const mapDispatchToProps = (dispatch) => {
-  console.log("mapDispatchToProps");
-  return {
-    
-    //removeAction: (dNum) => board_remove(dNum)
-  }
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CustomPaginationActionsTable));
-  
-
+export default connect(mapStateToProps)(withStyles(styles)(CustomPaginationActionsTable));
