@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { board_remove } from './reducer/App_reducer'
+import { board_remove, board_update_num } from './reducer/App_reducer'
 import BoardUpdate from './BoardUpdate';
 // css import
 import { withStyles } from '@material-ui/core/styles';
@@ -116,7 +116,8 @@ const styles = theme => ({
 // Table에서의 actions들을 담은 class
 class CustomPaginationActionsTable extends React.Component {
   state= {
-    hideUpdate: true,
+    hideUpdate: true,   //수정폼을 appear 및 disappar하기 위한 변수
+    uNum: 0,            //선택한 row만 수정하기 위한 변수
     page: 0,
     rowsPerPage: 5
   }
@@ -124,13 +125,17 @@ class CustomPaginationActionsTable extends React.Component {
   // 삭제 버튼 클릭시
   deleteBtn = (dNum) => {
     this.props.dispatch(board_remove(dNum));
+    this.props.dispatch(board_update_num(dNum));
+    this.setState({
+      uNum: 0
+    })
   }
 
   // 수정 버튼 클릭시 (수정을 위한 form을 보여줌)
-  updateBtn = (e) => {
-      e.preventDefault();
+  updateBtn = (uNum) => {
       this.setState({
-          hideUpdate:false
+          hideUpdate:false,
+          uNum: uNum
       })
   }
 
@@ -179,8 +184,8 @@ class CustomPaginationActionsTable extends React.Component {
                     <TableCell align="center">{row.title}</TableCell>
                     <TableCell align="center">{row.content}</TableCell>
                     <TableCell align="center">
-                      { !this.state.hideUpdate && <BoardUpdate num={row.num} updateBtn2={this.updateBtn2}/> }
-                      {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={this.updateBtn}><h3>수정</h3></Button> }</TableCell>
+                      { !this.state.hideUpdate && this.state.uNum === row.num && <BoardUpdate num={row.num} updateBtn2={this.updateBtn2}/> }
+                      {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={()=>this.updateBtn(row.num)}><h3>수정</h3></Button> }</TableCell>
                     <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.num)}><h3>삭제</h3></Button></TableCell>
                   </TableRow>
                 );

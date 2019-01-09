@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import BoardInsert from './BoardInsert';
-import BoardList2 from './BoardList';
+import BoardList from './BoardList';
 //css import
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,7 +19,7 @@ const App = () => (
       </AppBar>
       <Grid container direction="column" justify="space-evenly" alignItems="center">
         <BoardInsert />
-        <BoardList2 />
+        <BoardList />
      </Grid>
     </div>
 )

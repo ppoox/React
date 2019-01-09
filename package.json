@@ -7,11 +7,13 @@
     "@material-ui/icons": "^3.0.1",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
+    "react-chunk": "^7.3.0",
     "react-dom": "^16.6.3",
     "react-redux": "^6.0.0",
     "react-scripts": "2.1.1",
     "redux": "^4.0.1",
-    "redux-actions": "^2.6.4"
+    "redux-actions": "^2.6.4",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
