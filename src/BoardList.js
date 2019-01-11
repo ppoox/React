@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { board_remove, board_update_num } from './reducer/App_reducer'
+import { board_remove, board_update_num, board_list } from './reducer/App_reducer'
 import BoardUpdate from './BoardUpdate';
 // css import
 import { withStyles } from '@material-ui/core/styles';
@@ -156,11 +156,20 @@ class CustomPaginationActionsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  //List 수정중
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps.id !== this.props.id){
+      return this.props.dispatch(board_list())
+    }
+    
+  }
+
+  
   render() {
     const { classes } = this.props;
     const { rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.boards.length - page * rowsPerPage);
-
+    
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -186,7 +195,7 @@ class CustomPaginationActionsTable extends React.Component {
                     <TableCell align="center">
                       { !this.state.hideUpdate && this.state.uNum === row.num && <BoardUpdate num={row.num} updateBtn2={this.updateBtn2}/> }
                       {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={()=>this.updateBtn(row.num)}><h3>수정</h3></Button> }</TableCell>
-                    <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.num)}><h3>삭제</h3></Button></TableCell>
+                    <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.id)}><h3>삭제</h3></Button></TableCell>
                   </TableRow>
                 );
               })}

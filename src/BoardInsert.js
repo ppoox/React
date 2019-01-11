@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { board_save } from './reducer/App_reducer'
+import { board_save} from './reducer/App_reducer'
 // css import
 import './css/BoardInsert.css';
 import Button from '@material-ui/core/Button';

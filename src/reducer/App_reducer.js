@@ -1,4 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
+import firestore from '../FirebaseConfig.js';
 
 const BOARD_SAVE = 'SAVE';
 const BOARD_REMOVE = 'REMOVE';
@@ -19,9 +20,11 @@ export const board_list = createAction(BOARD_LIST);
 // 만약 파일의 개수가 많아진다면 ducks 기법을 사용하는 것을 고려할 수 있다.
 // 이 프로젝트에서는 ducks 기법을 사용하였다.
 
+
 // 초기 state
 const initialState ={
-    boards:[]
+    boards:[
+    ]
 };
 
 // actions 정의
@@ -30,9 +33,11 @@ export default handleActions({
         console.log("save action");
         let boards = state.boards;
         let obj;
+        let doc=firestore.collection("boards").doc();
 
         if(boards.length === 0){
             obj={
+                id: doc.id,
                 num: 1,
                 title: data.title,
                 content: data.content
@@ -40,19 +45,24 @@ export default handleActions({
         }
         if(boards.length !== 0){
             obj={
+                id: doc.id,
                 num: boards[boards.length-1].num+1,
                 title: data.title,
                 content: data.content
             };  
         }
-      
-          return {boards: boards.concat(obj)}
+        //firestore에 저장
+        doc.set(obj).then(() => console.log("create firestore!"));
+        
+        return {boards: boards.concat(obj)}
     },
     [BOARD_REMOVE]: (state, {payload: dNum}) => {
         console.log("remove action");
         let boards = state.boards;
-        
-        return {boards: boards.filter(boards => boards.num !== dNum)}
+        //firestore에서 삭제
+        firestore.collection("boards").doc(dNum).delete().then(() => console.log("delete firestore!"));
+
+        return {boards: boards.filter(boards => boards.id !== dNum)}
     },
     [BOARD_UPDATE]: (state, { payload: data}) => {
         console.log("update action");
@@ -64,5 +74,20 @@ export default handleActions({
         let boards = state.boards;
 
         return {boards: boards.map(board => board.num > dNum ? ({...board, num: board.num - 1}): board)}
+    },
+    [BOARD_LIST]: (state, {paylad: data}) => {
+        let rows=[];
+        console.log("list action");
+        firestore.collection("boards").orderBy("num", "desc").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                //console.log(`${doc.id} => ${doc.data()}`);
+                console.log("firebase getList"+ doc.data());
+                rows.push(doc.data());
+            });
+        });
+        
+        return {boards:rows}
     }
+
+
 }, initialState);
