@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { board_remove, board_update_num, board_list } from './reducer/App_reducer'
+import { firestore_board_remove, firestore_board_list, board_list } from '../reducer/App_reducer'
 import BoardUpdate from './BoardUpdate';
+import BoardItem from './BoardItem';
+
 // css import
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -119,13 +121,12 @@ class CustomPaginationActionsTable extends React.Component {
     hideUpdate: true,   //수정폼을 appear 및 disappar하기 위한 변수
     uNum: 0,            //선택한 row만 수정하기 위한 변수
     page: 0,
-    rowsPerPage: 5
+    rowsPerPage: 5,
   }
 
   // 삭제 버튼 클릭시
-  deleteBtn = (dNum) => {
-    this.props.dispatch(board_remove(dNum));
-    this.props.dispatch(board_update_num(dNum));
+  deleteBtn = (dId, dNum) => {
+    this.props.dispatch(firestore_board_remove(dId, dNum));
     this.setState({
       uNum: 0
     })
@@ -156,14 +157,9 @@ class CustomPaginationActionsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  //List 수정중
-  shouldComponentUpdate(nextProps, nextState) {
-    if(nextProps.id !== this.props.id){
-      return this.props.dispatch(board_list())
-    }
-    
+  componentDidMount() {
+    //this.props.dispatch(firestore_board_list());
   }
-
   
   render() {
     const { classes } = this.props;
@@ -178,7 +174,7 @@ class CustomPaginationActionsTable extends React.Component {
               <TableRow>
                 <TableCell align="center">번호</TableCell>
                 <TableCell align="center">제목</TableCell>
-                <TableCell align="center">내용</TableCell>
+                <TableCell align="center">작성자</TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
               </TableRow>
@@ -191,12 +187,14 @@ class CustomPaginationActionsTable extends React.Component {
                     {row.num}
                     </TableCell>
                     <TableCell align="center">{row.title}</TableCell>
-                    <TableCell align="center">{row.content}</TableCell>
+                    <TableCell align="center">{row.writer}</TableCell>
                     <TableCell align="center">
                       { !this.state.hideUpdate && this.state.uNum === row.num && <BoardUpdate num={row.num} updateBtn2={this.updateBtn2}/> }
                       {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={()=>this.updateBtn(row.num)}><h3>수정</h3></Button> }</TableCell>
-                    <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.id)}><h3>삭제</h3></Button></TableCell>
+                    <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.id, row.num)}><h3>삭제</h3></Button></TableCell>
                   </TableRow>
+
+                  //<BoardItem key={row.id} row={row} hideUpdate={this.state.hideUpdate} uNum={this.state.uNum}/>
                 );
               })}
               {emptyRows > 0 && (

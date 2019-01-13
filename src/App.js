@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
-import BoardInsert from './BoardInsert';
-import BoardList from './BoardList';
+import BoardInsert from './components/BoardInsert';
+import BoardList from './components/BoardList';
 //css import
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+
+import Floary from './components/Floary.js';
 
 const App = () => (
     <div className="App">
@@ -21,6 +23,8 @@ const App = () => (
         <BoardInsert />
         <BoardList />
      </Grid>
+
+     {/* <Floary /> */}
     </div>
 )
 

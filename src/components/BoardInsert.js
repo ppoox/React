@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { board_save} from './reducer/App_reducer'
+import { board_save, firestore_board_save} from '../reducer/App_reducer'
 // css import
-import './css/BoardInsert.css';
+import '../css/BoardInsert.css';
 import Button from '@material-ui/core/Button';
 
 class BoardInsert extends Component{
@@ -12,10 +12,9 @@ class BoardInsert extends Component{
         
         let data={
             title: e.target.title.value,
-            content: e.target.content.value
+            writer: e.target.writer.value
         }
-        // board_save action 호출을 위한 dispatch
-        this.props.dispatch(board_save(data))
+        this.props.dispatch(firestore_board_save(data));
     }
 
     render(){
@@ -24,8 +23,8 @@ class BoardInsert extends Component{
                 <form onSubmit={this.insertSubmit}>
                   <span><h3>제목 : </h3></span>
                   <input className="titleInsert" id="title" name="title"></input>
-                  <span><h3>내용 : </h3></span>
-                  <textarea className="contentInsert" id="content" name="content"></textarea>
+                  <span><h3>작성자 : </h3></span>
+                  <input className="writerInsert" id="writer" name="writer"></input>
                   <Button variant="contained" color="primary" type="submit"><h3>입력</h3></Button>
               </form>
             </div>
@@ -36,7 +35,7 @@ class BoardInsert extends Component{
 // BoardInsert.propTypes = {
 //     data: PropTypes.object.isRequired,
 //     title: PropTypes.string.isRequired,
-//     content: PropTypes.textarea.isRequired
+//     writer: PropTypes.textarea.isRequired
 // };
 
 export default connect()(BoardInsert);

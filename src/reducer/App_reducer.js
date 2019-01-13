@@ -21,6 +21,59 @@ export const board_list = createAction(BOARD_LIST);
 // 이 프로젝트에서는 ducks 기법을 사용하였다.
 
 
+// 아래와 같은 함수지만 다른 형태의 함수 표현
+// export const firesotre_board_save = () => (dispatch, getState => {
+//     return 
+// }
+export const firestore_board_save = (data) => {
+    return (dispatch, getState) => {
+        let boards = getState().boards;
+        let doc=firestore.collection("boards").doc();
+        let obj={
+            id: doc.id,
+            title: data.title,
+            writer: data.writer,
+            date: Date.now()
+        };  
+        
+        return  doc.set(obj).then(() => console.log("create firestore!")).then(() => {
+            
+        if(boards.length === 0){
+            obj.num=1;
+        }
+        if(boards.length !== 0){
+            obj.num=boards[boards.length-1].num+1;
+               
+        }
+            dispatch(board_save(obj));
+        })
+    }
+}
+
+export const firestore_board_remove = (dId, dNum) => {
+    return (dispatch, getState) => {
+        return firestore.collection("boards").doc(dId).delete().then(() => {
+            dispatch(board_remove(dId));
+            dispatch(board_update_num(dNum));
+        })
+    }
+}
+
+export const firestore_board_list = () => {
+    return (dispatch) => {
+        let rows=[];
+        console.log("list action");
+        
+        return firestore.collection("boards").orderBy("date", "desc").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log("firebase getList"+ doc.data());
+                rows.push(doc.data());
+            });
+            dispatch(board_list(rows));
+        });
+    }
+}
+
 // 초기 state
 const initialState ={
     boards:[
@@ -29,38 +82,14 @@ const initialState ={
 
 // actions 정의
 export default handleActions({
-    [BOARD_SAVE]: (state, {payload: data}) => {
-        console.log("save action");
+    [BOARD_SAVE]: (state, {payload: obj}) => {
         let boards = state.boards;
-        let obj;
-        let doc=firestore.collection("boards").doc();
-
-        if(boards.length === 0){
-            obj={
-                id: doc.id,
-                num: 1,
-                title: data.title,
-                content: data.content
-              };  
-        }
-        if(boards.length !== 0){
-            obj={
-                id: doc.id,
-                num: boards[boards.length-1].num+1,
-                title: data.title,
-                content: data.content
-            };  
-        }
-        //firestore에 저장
-        doc.set(obj).then(() => console.log("create firestore!"));
         
         return {boards: boards.concat(obj)}
     },
     [BOARD_REMOVE]: (state, {payload: dNum}) => {
         console.log("remove action");
         let boards = state.boards;
-        //firestore에서 삭제
-        firestore.collection("boards").doc(dNum).delete().then(() => console.log("delete firestore!"));
 
         return {boards: boards.filter(boards => boards.id !== dNum)}
     },
@@ -68,7 +97,7 @@ export default handleActions({
         console.log("update action");
         let boards = state.boards;
 
-        return {boards: boards.map(board => board.num === data.num ? ({...board, title: data.title, content: data.content}): board)}
+        return {boards: boards.map(board => board.num === data.num ? ({...board, title: data.title, writer: data.writer}): board)}
     },
     [BOARD_UPDATE_NUM]: (state, { payload: dNum}) => {
         let boards = state.boards;
@@ -76,18 +105,6 @@ export default handleActions({
         return {boards: boards.map(board => board.num > dNum ? ({...board, num: board.num - 1}): board)}
     },
     [BOARD_LIST]: (state, {paylad: data}) => {
-        let rows=[];
-        console.log("list action");
-        firestore.collection("boards").orderBy("num", "desc").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                //console.log(`${doc.id} => ${doc.data()}`);
-                console.log("firebase getList"+ doc.data());
-                rows.push(doc.data());
-            });
-        });
-        
-        return {boards:rows}
+        return {boards: data}
     }
-
-
 }, initialState);
