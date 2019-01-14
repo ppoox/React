@@ -9,7 +9,7 @@ const BOARD_LIST = 'LIST';
 
 // actions 생성
 export const board_save = createAction(BOARD_SAVE);
-export const board_remove = createAction(BOARD_REMOVE, dNum => dNum);
+export const board_remove = createAction(BOARD_REMOVE);
 export const board_update = createAction(BOARD_UPDATE);
 export const board_update_num = createAction(BOARD_UPDATE_NUM);
 export const board_list = createAction(BOARD_LIST);
@@ -25,9 +25,13 @@ export const board_list = createAction(BOARD_LIST);
 // export const firesotre_board_save = () => (dispatch, getState => {
 //     return 
 // }
+
+//thunk란? - 특정 작업을 나중에 하도록 미루기 위해서 함수형태로 감싼것을 칭한다.
+// redux-thunk란?
+// 객체 대신 함수를 생성하는 액션 생성함수를 작성 할 수 있게 해준다.
+// 리덕스에서는 기본적으로는 액션 객체를 디스패치한다. 일반 액션 생성자는 파라미터를 가지고 액션 객체를 생성하는 작업만 한다.
 export const firestore_board_save = (data) => {
     return (dispatch, getState) => {
-        let boards = getState().boards;
         let doc=firestore.collection("boards").doc();
         let obj={
             id: doc.id,
@@ -35,36 +39,24 @@ export const firestore_board_save = (data) => {
             writer: data.writer,
             date: Date.now()
         };  
-        
-        return  doc.set(obj).then(() => console.log("create firestore!")).then(() => {
-            
-        if(boards.length === 0){
-            obj.num=1;
-        }
-        if(boards.length !== 0){
-            obj.num=boards[boards.length-1].num+1;
-               
-        }
+        return doc.set(obj).then(() => {
             dispatch(board_save(obj));
         })
     }
 }
 
-export const firestore_board_remove = (dId, dNum) => {
-    return (dispatch, getState) => {
+export const firestore_board_remove = (dId) => {
+    return (dispatch) => {
         return firestore.collection("boards").doc(dId).delete().then(() => {
             dispatch(board_remove(dId));
-            dispatch(board_update_num(dNum));
         })
     }
 }
 
 export const firestore_board_list = () => {
     return (dispatch) => {
-        let rows=[];
-        console.log("list action");
-        
         return firestore.collection("boards").orderBy("date", "desc").get().then((querySnapshot) => {
+            let rows=[];
             querySnapshot.forEach((doc) => {
                 console.log("firebase getList"+ doc.data());
                 rows.push(doc.data());
@@ -74,37 +66,38 @@ export const firestore_board_list = () => {
     }
 }
 
+export const firestore_board_update = (obj) => {
+    return (dispacth) => {
+        return firestore.collection("boards").doc(obj.id).update({ 
+            title: obj.title,
+            writer: obj.writer
+        }).then(() => {
+            console.log(obj.title +" "+obj.writer);
+            dispacth(board_update(obj));
+        })
+    }
+}
+
 // 초기 state
 const initialState ={
-    boards:[
-    ]
+    boards:[]
 };
 
 // actions 정의
 export default handleActions({
     [BOARD_SAVE]: (state, {payload: obj}) => {
         let boards = state.boards;
-        
         return {boards: boards.concat(obj)}
     },
     [BOARD_REMOVE]: (state, {payload: dNum}) => {
-        console.log("remove action");
         let boards = state.boards;
-
         return {boards: boards.filter(boards => boards.id !== dNum)}
     },
     [BOARD_UPDATE]: (state, { payload: data}) => {
-        console.log("update action");
         let boards = state.boards;
-
-        return {boards: boards.map(board => board.num === data.num ? ({...board, title: data.title, writer: data.writer}): board)}
+        return {boards: boards.map(board => board.id === data.id ? ({...board, title: data.title, writer: data.writer}): board)}
     },
-    [BOARD_UPDATE_NUM]: (state, { payload: dNum}) => {
-        let boards = state.boards;
-
-        return {boards: boards.map(board => board.num > dNum ? ({...board, num: board.num - 1}): board)}
-    },
-    [BOARD_LIST]: (state, {paylad: data}) => {
+    [BOARD_LIST]: (state, {payload: data}) => {
         return {boards: data}
     }
 }, initialState);

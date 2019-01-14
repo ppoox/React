@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { board_update } from '../reducer/App_reducer' 
+import { firestore_board_update } from '../reducer/App_reducer' 
 // css import
 import Button from '@material-ui/core/Button';
 
@@ -10,20 +10,18 @@ class BoardUpdate extends Component {
         e.preventDefault();
         // 수정 form에 아무것도 입력하지 않았을때
         if(e.target.title.value === "" || e.target.writer.value === ""){
-            let hideUpdate=true;
-            this.props.updateBtn2(hideUpdate);
+            let hideupdate=true;
+            this.props.updateBtn2(hideupdate);
             return false;
         }
         let obj={
-            num: this.props.num,
+            id: this.props.id,
             title: e.target.title.value,
             writer: e.target.writer.value,
         }
-
-        let hideUpdate=true;
-        // board_update action 호출을 위한 dispatch
-        this.props.dispatch(board_update(obj));
-        this.props.updateBtn2(hideUpdate);
+        let hideupdate=true;
+        this.props.dispatch(firestore_board_update(obj));
+        this.props.updateBtn2(hideupdate);
     }
 
     render(){

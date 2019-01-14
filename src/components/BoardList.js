@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { firestore_board_remove, firestore_board_list, board_list } from '../reducer/App_reducer'
+import { firestore_board_remove, firestore_board_list } from '../reducer/App_reducer'
 import BoardUpdate from './BoardUpdate';
-import BoardItem from './BoardItem';
-
 // css import
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -119,7 +117,7 @@ const styles = theme => ({
 class CustomPaginationActionsTable extends React.Component {
   state= {
     hideUpdate: true,   //수정폼을 appear 및 disappar하기 위한 변수
-    uNum: 0,            //선택한 row만 수정하기 위한 변수
+    uId: 0,            //선택한 row만 수정하기 위한 변수
     page: 0,
     rowsPerPage: 5,
   }
@@ -128,15 +126,15 @@ class CustomPaginationActionsTable extends React.Component {
   deleteBtn = (dId, dNum) => {
     this.props.dispatch(firestore_board_remove(dId, dNum));
     this.setState({
-      uNum: 0
+      uId: 0
     })
   }
 
   // 수정 버튼 클릭시 (수정을 위한 form을 보여줌)
-  updateBtn = (uNum) => {
+  updateBtn = (uId) => {
       this.setState({
           hideUpdate:false,
-          uNum: uNum
+          uId: uId
       })
   }
 
@@ -158,14 +156,19 @@ class CustomPaginationActionsTable extends React.Component {
   };
 
   componentDidMount() {
-    //this.props.dispatch(firestore_board_list());
+   this.props.dispatch(firestore_board_list());
+    console.log("componentDidMount()");
   }
+
+  // componentDidReceiveProps(nextProps) {
+  //     this.props.dispatch(firestore_board_list());
+  // }
   
   render() {
     const { classes } = this.props;
     const { rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.boards.length - page * rowsPerPage);
-    
+    let countNum=(this.props.boards.length)-(page*rowsPerPage);
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -182,19 +185,17 @@ class CustomPaginationActionsTable extends React.Component {
             <TableBody>
               {this.props.boards.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
                 return (
-                  <TableRow key={row.num}>
+                  <TableRow key={row.id}>
                     <TableCell component="th" scope="row" align="center">
-                    {row.num}
+                    {countNum--}
                     </TableCell>
                     <TableCell align="center">{row.title}</TableCell>
                     <TableCell align="center">{row.writer}</TableCell>
                     <TableCell align="center">
-                      { !this.state.hideUpdate && this.state.uNum === row.num && <BoardUpdate num={row.num} updateBtn2={this.updateBtn2}/> }
-                      {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={()=>this.updateBtn(row.num)}><h3>수정</h3></Button> }</TableCell>
+                      { !this.state.hideUpdate && this.state.uId === row.id && <BoardUpdate id={row.id} updateBtn2={this.updateBtn2}/> }
+                      {this.state.hideUpdate && <Button variant="contained" color="primary" type="button" onClick={()=>this.updateBtn(row.id)}><h3>수정</h3></Button> }</TableCell>
                     <TableCell align="center"> <Button variant="contained" color="primary" type="button" onClick={()=>this.deleteBtn(row.id, row.num)}><h3>삭제</h3></Button></TableCell>
                   </TableRow>
-
-                  //<BoardItem key={row.id} row={row} hideUpdate={this.state.hideUpdate} uNum={this.state.uNum}/>
                 );
               })}
               {emptyRows > 0 && (

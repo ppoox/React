@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { board_save, firestore_board_save} from '../reducer/App_reducer'
+import {firestore_board_save} from '../reducer/App_reducer'
 // css import
 import '../css/BoardInsert.css';
 import Button from '@material-ui/core/Button';
@@ -9,7 +9,6 @@ class BoardInsert extends Component{
     // 입력 버튼 클릭시
     insertSubmit = (e) => {
         e.preventDefault();
-        
         let data={
             title: e.target.title.value,
             writer: e.target.writer.value
