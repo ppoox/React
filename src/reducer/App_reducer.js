@@ -30,15 +30,24 @@ export const board_list = createAction(BOARD_LIST);
 // redux-thunk란?
 // 객체 대신 함수를 생성하는 액션 생성함수를 작성 할 수 있게 해준다.
 // 리덕스에서는 기본적으로는 액션 객체를 디스패치한다. 일반 액션 생성자는 파라미터를 가지고 액션 객체를 생성하는 작업만 한다.
+// redux-thunk를 사용하면 객체에 로직을 추가해서 생성 할 수 있다.
+
+
+// .set() => 문서가 따로 없으면 생성하고 있으면 덮어씀
+// .doc("id") => 만들 문서의 id를 지정해야함
+// .add() => 만들 문서의 id를 따로 지정하지 않고 자동으로 생성 되는 id를 사용할때
+
+// .add(...)와 .doc().set(...)은 내부적으로 완전히 동등하므로 편의에 따라 골라서 사용하면 됩니다.
 export const firestore_board_save = (data) => {
     return (dispatch, getState) => {
-        let doc=firestore.collection("boards").doc();
-        let obj={
+        const doc=firestore.collection("boards").doc();
+        const obj={
+            ...data,
             id: doc.id,
-            title: data.title,
-            writer: data.writer,
             date: Date.now()
         };  
+        // data.id=doc.id;
+        // data.date=Date.now();
         return doc.set(obj).then(() => {
             dispatch(board_save(obj));
         })
@@ -89,9 +98,9 @@ export default handleActions({
         let boards = state.boards;
         return {boards: boards.concat(obj)}
     },
-    [BOARD_REMOVE]: (state, {payload: dNum}) => {
+    [BOARD_REMOVE]: (state, {payload: dId}) => {
         let boards = state.boards;
-        return {boards: boards.filter(boards => boards.id !== dNum)}
+        return {boards: boards.filter(boards => boards.id !== dId)}
     },
     [BOARD_UPDATE]: (state, { payload: data}) => {
         let boards = state.boards;

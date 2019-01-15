@@ -168,7 +168,7 @@ class CustomPaginationActionsTable extends React.Component {
     const { classes } = this.props;
     const { rowsPerPage, page } = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.boards.length - page * rowsPerPage);
-    let countNum=(this.props.boards.length)-(page*rowsPerPage);
+    let countNum=this.props.boards.length-(page*rowsPerPage);
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
