@@ -48,42 +48,42 @@ export const firestore_board_save = (data) => {
         };  
         // data.id=doc.id;
         // data.date=Date.now();
-        return doc.set(obj).then(() => {
-            dispatch(board_save(obj));
-        })
+        return doc.set(obj);
     }
 }
 
 export const firestore_board_remove = (dId) => {
-    return (dispatch) => {
-        return firestore.collection("boards").doc(dId).delete().then(() => {
-            dispatch(board_remove(dId));
-        })
+    return () => {
+        return firestore.collection("boards").doc(dId).delete();
+    }
+}
+
+export const firestore_board_update = (obj) => {
+    return () => {
+        return firestore.collection("boards").doc(obj.id).update({ 
+            title: obj.title,
+            writer: obj.writer
+        });
     }
 }
 
 export const firestore_board_list = () => {
     return (dispatch) => {
-        return firestore.collection("boards").orderBy("date", "desc").get().then((querySnapshot) => {
-            let rows=[];
-            querySnapshot.forEach((doc) => {
-                console.log("firebase getList"+ doc.data());
-                rows.push(doc.data());
+        // realtime
+        return firestore.collection("boards").orderBy("date", "desc")
+           .onSnapshot( (querySnapshot) => {
+                querySnapshot.docChanges().forEach((change) => {
+                    if(change.type === "added"){
+                    dispatch(board_save(change.doc.data()));
+                    }
+                    if(change.type === "removed") {
+                        dispatch(board_remove(change.doc.data().id));
+                    }
+                    if(change.type === "modified") {
+                        dispatch(board_update(change.doc.data()));
+                    }
             });
-            dispatch(board_list(rows));
         });
-    }
-}
-
-export const firestore_board_update = (obj) => {
-    return (dispacth) => {
-        return firestore.collection("boards").doc(obj.id).update({ 
-            title: obj.title,
-            writer: obj.writer
-        }).then(() => {
-            console.log(obj.title +" "+obj.writer);
-            dispacth(board_update(obj));
-        })
     }
 }
 
