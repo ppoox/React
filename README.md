@@ -6,9 +6,9 @@
 ##### 1. master branch          :  only user props and state
 
 
-##### 2. +redux branch          :  add   -> react-redux 
+##### 2. +redux branch          :  add   -> react-redux, material-ui
 <ul>
-installed                 -  react-redux
+installed                 -  react-redux, @material-ui/core
 </ul>
 
 
