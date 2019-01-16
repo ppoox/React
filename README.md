@@ -1,6 +1,6 @@
 # React_redux_Firebase_board
 
-### Use react, redux and firebase for board
+### Use react, redux and firebase(firestore) for board
 
 
 ##### 1. master branch          :  only user props and state
