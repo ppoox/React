@@ -19,4 +19,4 @@ installed                 -  firebase
 installed middleware      -  redux-thunk, redux-logger 
 </ul>
 
-##### 4. +redux+firebase+realtime : edit -> firestore of third branch is update for realtime database
+##### 4. firebase_realtime : edit -> firestore of third branch is update for realtime database
