@@ -14,7 +14,7 @@ installed                 -  react-redux, @material-ui/core
 
 ##### 3. +redux+firebase branch :  add   -> firebase(firestore), not realtime database
 <ul>
-                              fixed -> row of board numbering, board list order by and visible seleted row  
+                              fixed -> row of board numbering, board list order by date desc and visible update form that selected row 
 installed                 -  firebase
 installed middleware      -  redux-thunk, redux-logger 
 </ul>
