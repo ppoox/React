@@ -3,7 +3,7 @@
 ### Use react, redux and firebase(firestore) for board
 
 
-##### 1. master branch          :  only user props and state
+##### 1. master branch          :  only used props and state
 
 
 ##### 2. +redux branch          :  add   -> react-redux, material-ui
